@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "823313764710",
+    "project_id": "yizenotes",
+    "storage_bucket": "yizenotes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823313764710:android:2b86c27f29c969e067b8a7",
+        "android_client_info": {
+          "package_name": "com.example.Yize_Notes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYg5IFJkiaJMd_a2NCf99WwcP9DWML2y8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
