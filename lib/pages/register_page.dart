@@ -1,4 +1,5 @@
 import 'package:Yize_Notes/components/routes.dart';
+import 'package:Yize_Notes/components/show_error.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -55,9 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
               height: 20,
             ),
 
-
             // Password textfield
-
 
             TextField(
               obscureText: true,
@@ -78,39 +77,46 @@ class _RegisterPageState extends State<RegisterPage> {
                 final email = Email.text;
                 final password = Password.text;
                 try {
-                  await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: email, password: password);
-                          Navigator.of(context).pushNamedAndRemoveUntil(verifyEmail, (route) => false);
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    email: email,
+                    password: password,
+                  );
+                  final user = FirebaseAuth.instance.currentUser;
+                  await user?.sendEmailVerification();
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil(verifyEmail, (route) => false);
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'weak-password') {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Weak Password'),
-                        content:
-                            Text('Password should be at least 6 characters'),
-                      ),
+                    await showErrorDialog(
+                      context,
+                      'Password should be at least 6 characters',
+                      'Weak Password',
                     );
                   } else if (e.code == 'email-already-in-use') {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Invalid email'),
-                        content: Text(
-                            'The email address is already in use by another account.'),
-                      ),
+                    await showErrorDialog(
+                      context,
+                      'The email address is already in use by another account.',
+                      'Invalid email',
                     );
                   } else if (e.code == 'invalid-email') {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Invalid email'),
-                        content:
-                            Text('The email address you entered is not valid!'),
-                      ),
+                    await showErrorDialog(
+                      context,
+                      'The email address you entered is not valid!',
+                      'Invalid email',
+                    );
+                  } else {
+                    await showErrorDialog(
+                      context,
+                      'Error: ${e.code}',
+                      'Error',
                     );
                   }
+                } catch (e) {
+                  await showErrorDialog(
+                    context,
+                    e.toString(),
+                    'Error',
+                  );
                 }
               },
               child: Container(
@@ -127,12 +133,17 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 30,),
+            const SizedBox(
+              height: 30,
+            ),
             TextButton(
-              onPressed: (){
-                Navigator.of(context).pushNamedAndRemoveUntil(loginRoute,(route) => false,);
-              }, 
-              child: const Text('Already have an account? Log In now!')),
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    loginRoute,
+                    (route) => false,
+                  );
+                },
+                child: const Text('Already have an account? Log In now!')),
           ],
         ),
       ),

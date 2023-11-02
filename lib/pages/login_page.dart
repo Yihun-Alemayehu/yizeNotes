@@ -1,4 +1,5 @@
 import 'package:Yize_Notes/components/routes.dart';
+import 'package:Yize_Notes/components/show_error.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -74,24 +75,44 @@ class _LogInPageState extends State<LogInPage> {
                 final email = Email.text;
                 final password = Password.text;
                 try {
-                  await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: email, password: password);
-                          final user = FirebaseAuth.instance.currentUser;
-                          final verifedEmail = user?.emailVerified ?? false;
-                          if(verifedEmail) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(homeRoute,(route) => false,);
-                          }else {
-                            Navigator.of(context).pushNamedAndRemoveUntil(verifyEmail,(route) => false,);
-                          }
-                          
+                  await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: email, password: password);
+                  final user = FirebaseAuth.instance.currentUser;
+                  final verifedEmail = user?.emailVerified ?? false;
+                  if (verifedEmail) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      homeRoute,
+                      (route) => false,
+                    );
+                  } else {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyEmail,
+                      (route) => false,
+                    );
+                  }
                 } on FirebaseAuthException catch (e) {
-                  showDialog(
-                      context: context,
-                      builder: ((context) => AlertDialog(
-                            title: Text('Invalid Login'),
-                            content: Text('Invalid email or password !'),
-                          )));
+                  print(e.code);
+                  if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+                    print(e.code);
+                    await showErrorDialog(
+                      context,
+                      'Invalid email or password !',
+                      'Invalid Login',
+                    );
+                  } else {
+                    print(e.code);
+                     await showErrorDialog(
+                      context,
+                      'Error',
+                      'Error: ${e.code}',
+                    );
+                  }
+                } catch (e) {
+                   await showErrorDialog(
+                      context,
+                      e.toString(),
+                      'Error',
+                    );
                 }
               },
               child: Container(
@@ -108,12 +129,17 @@ class _LogInPageState extends State<LogInPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 30,),
+            const SizedBox(
+              height: 30,
+            ),
             TextButton(
-              onPressed: (){
-                Navigator.of(context).pushNamedAndRemoveUntil('/register',(route) => false,);
-              }, 
-              child: const Text('Don\'t have an account? Register now!')),
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    registerRoute,
+                    (route) => false,
+                  );
+                },
+                child: const Text('Don\'t have an account? Register now!')),
           ],
         ),
       ),

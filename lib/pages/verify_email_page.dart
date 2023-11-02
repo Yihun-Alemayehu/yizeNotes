@@ -19,10 +19,12 @@ class _VerifyEmailState extends State<VerifyEmail> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.fromLTRB(30, 100, 30, 0),
           child: Column(
             children: [
-              const Text('Please verify your email address !'),
+              const Text('We\'ve sent you a verification email, please open your email inbox and click the link to verify your account!'),
+              const SizedBox(height: 40,),
+              const Text('If you haven\'t recieved a verification email yet, Please press the button below !'),
               TextButton(
                   onPressed: () async {
                     final user = FirebaseAuth.instance.currentUser;
