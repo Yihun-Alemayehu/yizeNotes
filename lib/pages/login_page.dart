@@ -1,3 +1,4 @@
+import 'package:Yize_Notes/pages/home.dart';
 import 'package:Yize_Notes/pages/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -77,6 +78,7 @@ class _LogInPageState extends State<LogInPage> {
                   final userCredential = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: email, password: password);
+                          Navigator.of(context).pushNamedAndRemoveUntil('/home',(route) => false,);
                 } on FirebaseAuthException catch (e) {
                   showDialog(
                       context: context,
