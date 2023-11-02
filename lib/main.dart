@@ -1,3 +1,4 @@
+import 'package:Yize_Notes/components/routes.dart';
 import 'package:Yize_Notes/pages/home.dart';
 import 'package:Yize_Notes/pages/login_page.dart';
 import 'package:Yize_Notes/pages/register_page.dart';
@@ -14,9 +15,10 @@ void main() {
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
       routes: {
-        '/login': (context) => const LogInPage(),
-        '/register': (context) => const RegisterPage(),
-        '/home': (context) => const Home(),
+        loginRoute: (context) => const LogInPage(),
+        registerRoute: (context) => const RegisterPage(),
+        homeRoute: (context) => const Home(),
+        verifyEmail:(context) => const VerifyEmail(),
       },
     ),
   );
@@ -35,6 +37,7 @@ class HomePage extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
                final user = FirebaseAuth.instance.currentUser;
+               print(user);
                if(user != null) {
                  if (user.emailVerified) {
                     return const Home();
@@ -42,7 +45,7 @@ class HomePage extends StatelessWidget {
                       return const VerifyEmail();
                   }
                }else {
-                  return const LogInPage();
+                  return const RegisterPage();
                }     
             default:
               return const Center(child: Text('Loading...'));

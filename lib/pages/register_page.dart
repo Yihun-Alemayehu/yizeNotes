@@ -1,3 +1,4 @@
+import 'package:Yize_Notes/components/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +54,11 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(
               height: 20,
             ),
+
+
             // Password textfield
+
+
             TextField(
               obscureText: true,
               enableSuggestions: false,
@@ -73,11 +78,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 final email = Email.text;
                 final password = Password.text;
                 try {
-                  final userCredential = await FirebaseAuth.instance
+                  await FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
                           email: email, password: password);
-
-                  //print(userCredential);
+                          Navigator.of(context).pushNamedAndRemoveUntil(verifyEmail, (route) => false);
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'weak-password') {
                     showDialog(
@@ -107,8 +111,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     );
                   }
-
-                  print(e.code);
                 }
               },
               child: Container(
@@ -128,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 30,),
             TextButton(
               onPressed: (){
-                Navigator.of(context).pushNamedAndRemoveUntil('/login',(route) => false,);
+                Navigator.of(context).pushNamedAndRemoveUntil(loginRoute,(route) => false,);
               }, 
               child: const Text('Already have an account? Log In now!')),
           ],

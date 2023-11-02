@@ -1,5 +1,4 @@
-import 'package:Yize_Notes/pages/home.dart';
-import 'package:Yize_Notes/pages/register_page.dart';
+import 'package:Yize_Notes/components/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +31,7 @@ class _LogInPageState extends State<LogInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log In page'),
+        title: const Text('Log In page'),
         centerTitle: true,
       ),
       body: Center(
@@ -75,10 +74,17 @@ class _LogInPageState extends State<LogInPage> {
                 final email = Email.text;
                 final password = Password.text;
                 try {
-                  final userCredential = await FirebaseAuth.instance
+                  await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: email, password: password);
-                          Navigator.of(context).pushNamedAndRemoveUntil('/home',(route) => false,);
+                          final user = FirebaseAuth.instance.currentUser;
+                          final verifedEmail = user?.emailVerified ?? false;
+                          if(verifedEmail) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(homeRoute,(route) => false,);
+                          }else {
+                            Navigator.of(context).pushNamedAndRemoveUntil(verifyEmail,(route) => false,);
+                          }
+                          
                 } on FirebaseAuthException catch (e) {
                   showDialog(
                       context: context,
@@ -86,10 +92,7 @@ class _LogInPageState extends State<LogInPage> {
                             title: Text('Invalid Login'),
                             content: Text('Invalid email or password !'),
                           )));
-                  // print(e.code);
                 }
-                final user = FirebaseAuth.instance.currentUser;
-                print(user);
               },
               child: Container(
                 color: Colors.black,

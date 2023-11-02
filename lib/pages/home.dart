@@ -1,7 +1,6 @@
-import 'package:Yize_Notes/pages/login_page.dart';
+import 'package:Yize_Notes/components/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtool show log;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -30,7 +29,7 @@ class _HomeState extends State<Home> {
                   if (shouldLogout) {
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/login', (_) => false);
+                        .pushNamedAndRemoveUntil(loginRoute, (_) => false);
                   }
                   break;
               }
