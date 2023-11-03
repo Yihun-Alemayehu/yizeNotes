@@ -3,10 +3,8 @@ import 'package:Yize_Notes/pages/home.dart';
 import 'package:Yize_Notes/pages/login_page.dart';
 import 'package:Yize_Notes/pages/register_page.dart';
 import 'package:Yize_Notes/pages/verify_email_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:Yize_Notes/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:Yize_Notes/firebase_options.dart';
 
 void main() {
   runApp(
@@ -29,16 +27,13 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      ),
+      future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            final user = FirebaseAuth.instance.currentUser;
-            print(user);
+            final user = AuthService.firebase().currentUser;
             if (user != null) {
-              if (user.emailVerified) {
+              if (user.isEmailVerified) {
                 return const Home();
               } else {
                 return const VerifyEmail();
@@ -47,8 +42,8 @@ class HomePage extends StatelessWidget {
               return const RegisterPage();
             }
           default:
-            return Scaffold(
-              body: const Center(
+            return const Scaffold(
+              body: Center(
                 child: Text('Loading...'),
               ),
             );

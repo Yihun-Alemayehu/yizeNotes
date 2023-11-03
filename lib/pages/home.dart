@@ -1,5 +1,5 @@
 import 'package:Yize_Notes/components/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:Yize_Notes/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -12,7 +12,7 @@ class Home extends StatefulWidget {
 enum MenuAction { logOut }
 
 class _HomeState extends State<Home> {
-  final user = FirebaseAuth.instance.currentUser;
+  final user = AuthService.firebase().currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +27,7 @@ class _HomeState extends State<Home> {
                 case MenuAction.logOut:
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
-                    await FirebaseAuth.instance.signOut();
+                    await AuthService.firebase().logOut();
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(loginRoute, (_) => false);
                   }
@@ -46,7 +46,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: Center(
-        child: Text('Logged in as ${user?.email}'),
+        child: Text('Logged in as ${AuthService.firebase().currentUser?.email}'),
       ),
     );
   }
