@@ -91,16 +91,13 @@ class _LogInPageState extends State<LogInPage> {
                     );
                   }
                 } on FirebaseAuthException catch (e) {
-                  print(e.code);
                   if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-                    print(e.code);
                     await showErrorDialog(
                       context,
                       'Invalid email or password !',
                       'Invalid Login',
                     );
                   } else {
-                    print(e.code);
                      await showErrorDialog(
                       context,
                       'Error',
