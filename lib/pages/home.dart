@@ -1,4 +1,5 @@
 import 'package:Yize_Notes/components/routes.dart';
+import 'package:Yize_Notes/services/CRUD/note_service.dart';
 import 'package:Yize_Notes/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
@@ -12,43 +13,65 @@ class Home extends StatefulWidget {
 enum MenuAction { logOut }
 
 class _HomeState extends State<Home> {
+  late final NotesService _notesService;
   final user = AuthService.firebase().currentUser;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+
+  @override
+  void initState() {
+    _notesService = NotesService();
+    _notesService.open();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _notesService.close();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        centerTitle: true,
-        leading: const Icon(Icons.menu),
-        actions: [
-          PopupMenuButton<MenuAction>(
-            onSelected: (value) async {
-              switch (value) {
-                case MenuAction.logOut:
-                  final shouldLogout = await showLogOutDialog(context);
-                  if (shouldLogout) {
-                    await AuthService.firebase().logOut();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil(loginRoute, (_) => false);
-                  }
-                  break;
-              }
-            },
-            itemBuilder: (context) {
-              return [
-                const PopupMenuItem<MenuAction>(
-                  value: MenuAction.logOut,
-                  child: Text('Logout'),
-                ),
-              ];
-            },
-          )
-        ],
-      ),
-      body: Center(
-        child: Text('Logged in as ${AuthService.firebase().currentUser?.email}'),
-      ),
-    );
+        appBar: AppBar(
+          title: const Text('Home'),
+          centerTitle: true,
+          leading: const Icon(Icons.menu),
+          actions: [
+            PopupMenuButton<MenuAction>(
+              onSelected: (value) async {
+                switch (value) {
+                  case MenuAction.logOut:
+                    final shouldLogout = await showLogOutDialog(context);
+                    if (shouldLogout) {
+                      await AuthService.firebase().logOut();
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil(loginRoute, (_) => false);
+                    }
+                    break;
+                }
+              },
+              itemBuilder: (context) {
+                return [
+                  const PopupMenuItem<MenuAction>(
+                    value: MenuAction.logOut,
+                    child: Text('Logout'),
+                  ),
+                ];
+              },
+            )
+          ],
+        ),
+        body: FutureBuilder(
+          future: _notesService.getOrCreateUser(email: userEmail),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return const Text('Done!');
+              default:
+                return const CircularProgressIndicator();
+            }
+          },
+        ));
   }
 }
 
