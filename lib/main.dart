@@ -1,6 +1,7 @@
 import 'package:Yize_Notes/components/routes.dart';
 import 'package:Yize_Notes/pages/home.dart';
 import 'package:Yize_Notes/pages/login_page.dart';
+import 'package:Yize_Notes/pages/new_notes.dart';
 import 'package:Yize_Notes/pages/register_page.dart';
 import 'package:Yize_Notes/pages/verify_email_page.dart';
 import 'package:Yize_Notes/services/auth/auth_service.dart';
@@ -16,6 +17,7 @@ void main() {
         registerRoute: (context) => const RegisterPage(),
         homeRoute: (context) => const Home(),
         verifyEmail: (context) => const VerifyEmail(),
+        newNotes: (context) => const NewNotes(),
       },
     ),
   );

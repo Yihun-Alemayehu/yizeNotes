@@ -38,6 +38,11 @@ class _HomeState extends State<Home> {
           centerTitle: true,
           leading: const Icon(Icons.menu),
           actions: [
+            IconButton(
+              onPressed: (){
+                Navigator.of(context).pushNamed(newNotes);
+              }, 
+              icon: const Icon(Icons.add)),
             PopupMenuButton<MenuAction>(
               onSelected: (value) async {
                 switch (value) {
@@ -59,7 +64,8 @@ class _HomeState extends State<Home> {
                   ),
                 ];
               },
-            )
+            ),
+            
           ],
         ),
         body: FutureBuilder(
