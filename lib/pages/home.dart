@@ -27,6 +27,7 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     _notesService.close();
+    super.dispose();
   }
 
   @override
@@ -66,7 +67,16 @@ class _HomeState extends State<Home> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
-                return const Text('Done!');
+                return StreamBuilder(
+                  stream: _notesService.allNotes, 
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {                     
+                      case ConnectionState.waiting:
+                        return const Center(child: Text('waiting for all notes'),);
+                      default:
+                        return const CircularProgressIndicator();
+                    }
+                  },);
               default:
                 return const CircularProgressIndicator();
             }

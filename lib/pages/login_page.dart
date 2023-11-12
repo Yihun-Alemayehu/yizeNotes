@@ -80,17 +80,20 @@ class _LogInPageState extends State<LogInPage> {
                       .logIn(email: email, password: password);
                   final user = AuthService.firebase().currentUser;
                   final verifedEmail = user?.isEmailVerified ?? false;
-                  if (verifedEmail) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      homeRoute,
-                      (route) => false,
-                    );
-                  } else {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      verifyEmail,
-                      (route) => false,
-                    );
-                  }
+                  // if (verifedEmail) {
+                  //   Navigator.of(context).pushNamedAndRemoveUntil(
+                  //     homeRoute,
+                  //     (route) => false,
+                  //   );
+                  // } else {
+                  //   Navigator.of(context).pushNamedAndRemoveUntil(
+                  //     verifyEmail,
+                  //     (route) => false,
+                  //   );
+                  // }
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                       homeRoute,
+                       (route) => false,);
                 } on InvalidLoginCredentialsAuthException {
                   await showErrorDialog(
                     context,

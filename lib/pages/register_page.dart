@@ -83,9 +83,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     email: email,
                     password: password,
                   );
-                  await AuthService.firebase().sendEmailVerification();
+                  // await AuthService.firebase().sendEmailVerification();
+                  // Navigator.of(context)
+                  //     .pushNamedAndRemoveUntil(verifyEmail, (route) => false);
                   Navigator.of(context)
-                      .pushNamedAndRemoveUntil(verifyEmail, (route) => false);
+                      .pushNamedAndRemoveUntil(homeRoute, (route) => false);
                 } on WeakPasswordAuthException {
                   await showErrorDialog(
                     context,
