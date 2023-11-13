@@ -78,7 +78,8 @@ class _HomeState extends State<Home> {
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {                     
                       case ConnectionState.waiting:
-                        return const Center(child: Text('waiting for all notes'),);
+                      case ConnectionState.active:
+                        return const Center(child: Text('waiting for all notes'),);                 
                       default:
                         return const CircularProgressIndicator();
                     }
