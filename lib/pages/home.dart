@@ -25,12 +25,6 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  void dispose() {
-    _notesService.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -39,10 +33,10 @@ class _HomeState extends State<Home> {
           leading: const Icon(Icons.menu),
           actions: [
             IconButton(
-              onPressed: (){
-                Navigator.of(context).pushNamed(newNotes);
-              }, 
-              icon: const Icon(Icons.add)),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(newNotes);
+                },
+                icon: const Icon(Icons.add)),
             PopupMenuButton<MenuAction>(
               onSelected: (value) async {
                 switch (value) {
@@ -65,7 +59,6 @@ class _HomeState extends State<Home> {
                 ];
               },
             ),
-            
           ],
         ),
         body: FutureBuilder(
@@ -74,18 +67,49 @@ class _HomeState extends State<Home> {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 return StreamBuilder(
-                  stream: _notesService.allNotes, 
+                  stream: _notesService.allNotes,
                   builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {                     
+                    switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                       case ConnectionState.active:
-                        return const Center(child: Text('waiting for all notes'),);                 
+                        if (snapshot.hasData) {
+                          final allNotes = snapshot.data;
+                          ListView.builder(
+                              itemCount: allNotes!.length,
+                              itemBuilder: (context, index) {
+                                final notes = allNotes[index];
+                                return ListTile(
+                                  title: Text(
+                                    notes.text,
+                                    maxLines: 1,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                );
+                              });
+                        } else {
+                          return const CircularProgressIndicator(
+                            color: Colors.red,
+                          );
+                        }
                       default:
-                        return const CircularProgressIndicator();
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.brown,
+                          ),
+                        );
                     }
-                  },);
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.deepOrange,
+                      ),
+                    );
+                  },
+                );
               default:
-                return const CircularProgressIndicator();
+                return const CircularProgressIndicator(
+                  color: Colors.amber,
+                );
             }
           },
         ));

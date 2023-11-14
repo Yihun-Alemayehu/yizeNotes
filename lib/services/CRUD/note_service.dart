@@ -6,23 +6,27 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show join;
 
-
-
 class NotesService {
   Database? _db;
 
   List<DatabaseNotes> _notes = [];
 
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance();
+  NotesService._sharedInstance() {
+    _notesStreamController = StreamController<List<DatabaseNotes>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
 
   factory NotesService() => _shared;
 
-  final _notesStreamController = StreamController<List<DatabaseNotes>>.broadcast();
+  late final StreamController<List<DatabaseNotes>> _notesStreamController;
 
   Stream<List<DatabaseNotes>> get allNotes => _notesStreamController.stream;
-  
-  Future<DatabaseUser> getOrCreateUser ({required String email}) async {
+
+  Future<DatabaseUser> getOrCreateUser({required String email}) async {
     try {
       final user = await getUser(email: email);
       return user;
@@ -34,7 +38,7 @@ class NotesService {
     }
   }
 
-  Future<void> _cacheNotes () async{
+  Future<void> _cacheNotes() async {
     final allNotes = await getAllNotes();
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);
@@ -52,11 +56,11 @@ class NotesService {
     final updatesCount = await db!.update(noteTable, {
       textColumn: text,
       isSyncedWithCloudColumn: 0,
-      });
+    });
 
-    if(updatesCount == 0){
+    if (updatesCount == 0) {
       throw CouldNotUpdateNoteException();
-    }else {
+    } else {
       final updatedNote = await getNote(id: notes.id);
       _notes.removeWhere((note) => note.id == updatedNote.id);
       _notes.add(updatedNote);
@@ -100,7 +104,7 @@ class NotesService {
   Future<int> deleteAllNotes() async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-    final numberOfDeletions =  await db!.delete(noteTable);
+    final numberOfDeletions = await db!.delete(noteTable);
     _notes = [];
     _notesStreamController.add(_notes);
     return numberOfDeletions;
@@ -117,7 +121,7 @@ class NotesService {
 
     if (deletedCount == 0) {
       throw CouldNotDeleteNoteException();
-    }else {
+    } else {
       _notes.removeWhere((note) => note.id == id);
       _notesStreamController.add(_notes);
     }
@@ -224,13 +228,10 @@ class NotesService {
     }
   }
 
-  Future<void> _ensureDbIsOpen () async{
+  Future<void> _ensureDbIsOpen() async {
     try {
       await open();
-    } on DatabaseAlreadyOpenException {
-
-    }
-   
+    } on DatabaseAlreadyOpenException {}
   }
 
   Future<void> open() async {

@@ -10,7 +10,7 @@ class NewNotes extends StatefulWidget {
 }
 
 class _NewNotesState extends State<NewNotes> {
-  late DatabaseNotes _note;
+  DatabaseNotes? _note;
   late final NotesService _notesService;
   late final TextEditingController _textEditingController;
 
@@ -88,7 +88,7 @@ class _NewNotesState extends State<NewNotes> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState){
             case ConnectionState.done:
-            //_note = snapshot.data as DatabaseNotes;
+            _note = snapshot.data;
             _setupTextEditingControllerListener();
               return TextField(
                 controller: _textEditingController,
