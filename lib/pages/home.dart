@@ -1,4 +1,6 @@
+import 'package:Yize_Notes/components/dialogs/logout_dialog.dart';
 import 'package:Yize_Notes/components/routes.dart';
+import 'package:Yize_Notes/pages/notes_list.dart';
 import 'package:Yize_Notes/services/CRUD/note_service.dart';
 import 'package:Yize_Notes/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +75,12 @@ class _HomeState extends State<Home> {
                       case ConnectionState.waiting:
                       case ConnectionState.active:
                         if (snapshot.hasData) {
-                          final allNotes = snapshot.data;
-                          print(allNotes);
+                          final allNotes = snapshot.data as List<DatabaseNotes> ;
+                          return NotesList(
+                            notes: allNotes, 
+                            onDeleteNote: (note) async{
+                              await _notesService.deleteNote(id: note.id);
+                            });
                           
                         } else {
                           return const CircularProgressIndicator(
@@ -88,11 +94,6 @@ class _HomeState extends State<Home> {
                           ),
                         );
                     }
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.deepOrange,
-                      ),
-                    );
                   },
                 );
               default:
@@ -105,26 +106,4 @@ class _HomeState extends State<Home> {
   }
 }
 
-Future<bool> showLogOutDialog(BuildContext context) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Log Out'),
-        content: const Text('Are You Sure ?'),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text('Yes')),
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: const Text('No')),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
-}
+

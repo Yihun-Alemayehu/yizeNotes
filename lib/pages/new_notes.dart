@@ -29,7 +29,7 @@ class _NewNotesState extends State<NewNotes> {
 
     final text = _textEditingController.text;
     await _notesService.updateNote(
-      notes: note,
+      note: note,
       text: text,
     );
   }
@@ -62,7 +62,7 @@ class _NewNotesState extends State<NewNotes> {
     final text = _textEditingController.text;
     if (text.isNotEmpty && note != null) {
       await _notesService.updateNote(
-        notes: note,
+        note: note,
         text: text,
       );
     }

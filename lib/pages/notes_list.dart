@@ -1,3 +1,4 @@
+import 'package:Yize_Notes/components/dialogs/delete_dialog.dart';
 import 'package:Yize_Notes/services/CRUD/note_service.dart';
 import 'package:flutter/material.dart';
 
