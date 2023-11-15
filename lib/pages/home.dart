@@ -74,19 +74,8 @@ class _HomeState extends State<Home> {
                       case ConnectionState.active:
                         if (snapshot.hasData) {
                           final allNotes = snapshot.data;
-                          ListView.builder(
-                              itemCount: allNotes!.length,
-                              itemBuilder: (context, index) {
-                                final notes = allNotes[index];
-                                return ListTile(
-                                  title: Text(
-                                    notes.text,
-                                    maxLines: 1,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                );
-                              });
+                          print(allNotes);
+                          
                         } else {
                           return const CircularProgressIndicator(
                             color: Colors.red,
